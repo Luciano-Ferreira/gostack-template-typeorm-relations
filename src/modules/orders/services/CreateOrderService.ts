@@ -1,6 +1,7 @@
 import { inject, injectable } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
+import { isUuid } from 'uuidv4';
 
 import IProductsRepository from '@modules/products/repositories/IProductsRepository';
 import ICustomersRepository from '@modules/customers/repositories/ICustomersRepository';
@@ -29,6 +30,10 @@ class CreateOrderService {
   ) {}
 
   public async execute({ customer_id, products }: IRequest): Promise<Order> {
+    if (!isUuid(customer_id)) {
+      throw new AppError('Invalid customer id');
+    }
+
     const customerExist = await this.customersRepository.findById(customer_id);
 
     if (!customerExist) {
