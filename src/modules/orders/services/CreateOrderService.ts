@@ -30,6 +30,8 @@ class CreateOrderService {
   ) {}
 
   public async execute({ customer_id, products }: IRequest): Promise<Order> {
+    // Customer
+
     if (!isUuid(customer_id)) {
       throw new AppError('Invalid customer id');
     }
@@ -38,6 +40,12 @@ class CreateOrderService {
 
     if (!customerExist) {
       throw new AppError('Could not find any customer with the given id');
+    }
+
+    // Products
+
+    if (products.find(product => !isUuid(product.id))) {
+      throw new AppError('invalid product id');
     }
 
     const existentProducts = await this.productsRepository.findAllById(
