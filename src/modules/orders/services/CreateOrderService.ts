@@ -1,7 +1,7 @@
 import { inject, injectable } from 'tsyringe';
 
 import AppError from '@shared/errors/AppError';
-import { isUuid } from 'uuidv4';
+import { validate } from 'uuid';
 
 import IProductsRepository from '@modules/products/repositories/IProductsRepository';
 import ICustomersRepository from '@modules/customers/repositories/ICustomersRepository';
@@ -32,7 +32,7 @@ class CreateOrderService {
   public async execute({ customer_id, products }: IRequest): Promise<Order> {
     // Customer
 
-    if (!isUuid(customer_id)) {
+    if (!validate(customer_id)) {
       throw new AppError('Invalid customer id');
     }
 
@@ -44,7 +44,7 @@ class CreateOrderService {
 
     // Products
 
-    if (products.find(product => !isUuid(product.id))) {
+    if (products.find(product => !validate(product.id))) {
       throw new AppError('invalid product id');
     }
 
